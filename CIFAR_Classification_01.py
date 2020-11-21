@@ -15,11 +15,6 @@ import matplotlib.pyplot as plt
 import torchvision
 
 
-
-
-
-
-
 # Device Configuration
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(device)
@@ -33,20 +28,17 @@ def prepare_data():
     test_dl = DataLoader(test,batch_size=4,shuffle=False)
     return train_dl,test_dl
 
-
-
-
-
-
-
+# Saving Checkpoints
 def save_checkpoint(state,filename = 'my_checkpoint.pth.tar'):
     print("Saving checkpoints")
     torch.save(state,filename)
-
+    
+# Loading Checkpoints
 def load_checkpoint(checkpoint):
     print("Loading checkpoint")
     model.load_state_dict(checkpoint['state_dict'])
     #optimizer.load_state_dict(checkpoint['optimizer'])
+    
 # Model
 class Convnet(nn.Module):
     def __init__(self, in_channel):
@@ -70,6 +62,7 @@ class Convnet(nn.Module):
 model = Convnet(3).to(device)
 num_epoch = 6
 
+#Training Model
 if load_model:
     load_checkpoint(torch.load('my_checkpoint.pth.tar'))
 def train_model(train_dl,model):
@@ -102,6 +95,7 @@ def train_model(train_dl,model):
     #PATH = './cifar_net.pth'
     #torch.save(model.state_dict(),PATH)
 
+#Evaluation Model    
 def evaluate(test_dl, model):
     predictions, actuals = list(),list()
     n_samples = 0
@@ -134,42 +128,6 @@ acc = evaluate(test_dl,model)
 print('Accuracy',acc)
 #print(len(train_dl.dataset), len(test_dl.dataset))
 
-
-'''
-class CNN(nn.Module):
-    # define model elements
-    def __init__(self, n_channels):
-        super(CNN, self).__init__()
-        self.hidden1 = nn.Conv2d(n_channels, 32, 3)
-        self.pool = nn.MaxPool2d(2, 2)
-        self.hidden2 = nn.Conv2d(32, 32, 3)
-        self.hidden3 = nn.Linear(5 * 5 * 32, 100)
-        self.hidden4 = nn.Linear(100, 10)
-        #self.act4 = nn.Softmax(dim=1)
-
-    # forward propagate input
-    def forward(self, X):
-        # input to first hidden layer
-        #print(X.shape)
-        X = F.relu(self.hidden1(X))
-        #print(X.shape)
-        X = self.pool(X)
-        # second hidden layer
-        X = F.relu(self.hidden2(X))
-        print(X.shape)
-        X = self.pool(X)
-        # flatten
-        print(X.shape)
-        #X = X.view(-1, 4 * 4 * 50)
-        X = X.view(-1, 32 * 5*5)
-        # third hidden layer
-        X = F.relu(self.hidden3(X))
-        # output layer
-        #X = F.relu(self.hidden4(X))
-        return X
-'''
-
-'''
 
 '''
 
